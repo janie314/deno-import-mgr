@@ -29,11 +29,11 @@ await new Command()
   .name("import-mgr")
   .version(consts.VERSION)
   .description(consts.DESCRIPTION)
-  .parse(Deno.args)
   .command("cache")
   .description("cache deno.json dependencies")
   .action(async () => {
     const deno_json = await read_deno_json();
     const res = await cache(deno_json);
     console.table(res);
-  });
+  })
+  .parse(Deno.args);
