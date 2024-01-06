@@ -1,9 +1,9 @@
 import { consts } from "./consts.ts";
-import { Command } from "cliffy";
+import { cliffy } from "./deps.ts";
 import { read_deno_json } from "./lib/deno_json.ts";
 import { cache } from "./lib/cache.ts";
 
-await new Command()
+await new cliffy.Command()
   .name("import-mgr")
   .version(consts.VERSION)
   .description(consts.DESCRIPTION)
