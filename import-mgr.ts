@@ -1,33 +1,7 @@
-import { join } from "path";
 import { consts } from "./consts.ts";
 import { Command } from "cliffy";
-
-type DenoJson = { imports: { [key: string]: string } };
-
-async function read_deno_json(): Promise<DenoJson> {
-  const cwd = Deno.cwd();
-  const path = join(cwd, "deno.json");
-  return await Deno.readTextFile(path).then((res) => JSON.parse(res));
-}
-
-async function cache(
-  deno_json: DenoJson,
-  verbose: boolean,
-): Promise<{ success: boolean; url: string }[]> {
-  return await Promise.all(
-    Object.values(deno_json.imports).map(async (url: string) => {
-      const res = await new Deno.Command("deno", { args: ["info", url] })
-        .output();
-      if (verbose) {
-        console.log(new TextDecoder().decode(res.stdout));
-      }
-      return {
-        success: res.success,
-        url,
-      };
-    }),
-  );
-}
+import { read_deno_json } from "./lib/deno_json.ts";
+import { cache } from "./lib/cache.ts";
 
 await new Command()
   .name("import-mgr")
