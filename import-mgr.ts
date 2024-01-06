@@ -12,11 +12,15 @@ async function read_deno_json(): Promise<DenoJson> {
 
 async function cache(
   deno_json: DenoJson,
+  verbose: boolean,
 ): Promise<{ success: boolean; url: string }[]> {
   return await Promise.all(
     Object.values(deno_json.imports).map(async (url: string) => {
       const res = await new Deno.Command("deno", { args: ["info", url] })
         .output();
+      if (verbose) {
+        console.log(new TextDecoder().decode(res.stdout));
+      }
       return {
         success: res.success,
         url,
@@ -31,9 +35,10 @@ await new Command()
   .description(consts.DESCRIPTION)
   .command("cache")
   .description("cache deno.json dependencies")
-  .action(async () => {
+  .option("-v, --verbose", "Enable verbose output.")
+  .action(async (args: { verbose: boolean }) => {
     const deno_json = await read_deno_json();
-    const res = await cache(deno_json);
+    const res = await cache(deno_json, args.verbose);
     console.table(res);
   })
   .parse(Deno.args);
