@@ -34,7 +34,7 @@ await new cliffy.Command()
     const new_deno_json = await package2deno(package_json);
     deno_json.imports = new_deno_json.imports;
 
-    await Deno.writeTextFile(deno_path, JSON.stringify(deno_json));
+    await Deno.writeTextFile(deno_path, JSON.stringify(deno_json, null, 2));
     const res = await cache(deno_json, false);
     console.table(res);
   })
