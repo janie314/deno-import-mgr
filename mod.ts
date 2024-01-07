@@ -25,11 +25,16 @@ await new cliffy.Command()
   .description("convert package.json to deno.json and cache dependencies")
   // option for --no-cache
   .action(async () => {
-    const filepath = join(Deno.cwd(), "package.json");
-    const out_filepath = join(Deno.cwd(), "deno.json");
-    const package_json = await read_json<PackageJson>(filepath);
-    const deno_json = await package2deno(package_json);
-    await Deno.writeTextFile(out_filepath, JSON.stringify(deno_json));
+    const pkg_path = join(Deno.cwd(), "package.json");
+    const deno_path = join(Deno.cwd(), "deno.json");
+
+    const package_json = await read_json<PackageJson>(pkg_path);
+    const deno_json = await read_json<DenoJson>(deno_path);
+
+    const new_deno_json = await package2deno(package_json);
+    deno_json.imports = new_deno_json.imports;
+
+    await Deno.writeTextFile(deno_path, JSON.stringify(deno_json));
     const res = await cache(deno_json, false);
     console.table(res);
   })
