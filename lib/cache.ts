@@ -1,4 +1,4 @@
-import { DenoJson } from "./deno_json.ts";
+import { DenoJson } from "./specs.ts";
 
 async function cache(
   deno_json: DenoJson,
